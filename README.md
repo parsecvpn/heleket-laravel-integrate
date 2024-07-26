@@ -122,10 +122,13 @@ class CryptomusTestCommand extends Command
         $instance = new CryptomusSdk();
         echo $instance->create_payment(
             'INV-test-01',
-            10000,
-            'Description-test-01',
-            'http://localhost:8000/return',
-            'http://localhost:8000/back'
+            100,
+            'USDT',
+            'BSC',
+            'INV-test-01',
+            'https://yourdomain.ltd/invoices/INV-test-01',
+            'https://yourdomain.ltd/invoices/INV-test-01',
+            'https://yourdomain.ltd/invoices/INV-test-01?success=true' // Remember that param success=true or any similar is just for toast notification, do not put any logical process here
         );
     }
 }

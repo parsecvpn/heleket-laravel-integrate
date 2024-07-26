@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Cryptomus\Api\RequestBuilderException;
 use FunnyDev\Cryptomus\CryptomusSdk;
 use Illuminate\Http\Request;
 
 class CryptomusController
 {
+    /**
+     * @throws RequestBuilderException
+     */
     public function webhook(Request $request)
     {
         $cryptomus = new CryptomusSdk();
