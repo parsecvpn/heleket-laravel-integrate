@@ -2,12 +2,12 @@
 
 namespace FunnyDev\Cryptomus;
 
-use App\Http\Controllers\System\BinanceSystem;
 use Cryptomus\Api\Client;
 use Cryptomus\Api\Payment;
 use Cryptomus\Api\Payout;
 use Cryptomus\Api\RequestBuilderException;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 
 class CryptomusSdk
@@ -28,16 +28,21 @@ class CryptomusSdk
         $this->client_payout = Client::payout($this->payout_key, $this->merchant_uuid);
     }
 
-    public function convert_array($data): array
+    public function convert_currency(float|int $amount=0, $currency='USD'): float|int|null
     {
-        if (! $data) {
-            return [];
+        if ($currency == 'USD') {
+            return $amount;
         }
-        $tmp = json_decode(json_encode($data, true), true);
-        if (! is_array($tmp)) {
-            $tmp = json_decode($tmp, true);
+
+        $prices = Http::get('https://api.cryptomus.com/v1/exchange-rate/USD/list')->json();
+
+        foreach ($prices['result'] as $price) {
+            if ($price['to'] == $currency) {
+                return $amount * floatval(str_replace(',', '', $price['course']));
+            }
         }
-        return $tmp;
+
+        return null;
     }
 
     /**
