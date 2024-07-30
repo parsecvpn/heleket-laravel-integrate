@@ -64,7 +64,7 @@ class CryptomusSdk
     /**
      * @throws RequestBuilderException
      */
-    public function create_payment(string $invoice_number, float|int $amount, string $currency='USDT', string $to_currency='', string $network='BSC', string $description='', string $return_url='', string $back_url='', string $success_url=''): string
+    public function create_payment(string $invoice_number, float|int $amount, string $currency='USD', string $to_currency='', string $network='', string $return_url='', string $back_url='', string $success_url=''): string
     {
         $param = [
             'amount' => strval($amount),
@@ -82,6 +82,9 @@ class CryptomusSdk
         ];
         if ($to_currency) {
             $param['to_currency'] = $to_currency;
+        }
+        if ($network) {
+            $param['network'] = $network;
         }
         $response = $this->client_payment->create($param);
         return $response['url'];
