@@ -123,12 +123,13 @@ class CryptomusSdk
         if ($this->verify_result($param)) {
             if ($param['is_final'] && $param['order_id'] && in_array($param['status'], ['paid', 'paid_over'])) {
                 $result['status'] = true;
-                $result['init_amount'] = floatval($result['amount']);
-                $result['payment_amount'] = floatval($result['payment_amount']);
-                $result['currency'] = $result['payer_currency'];
+                $result['init_amount'] = floatval($param['amount']);
+                $result['payment_amount'] = floatval($param['payment_amount']);
+                $result['currency'] = $param['payer_currency'];
                 $result['invoice_number'] = $param['order_id'];
+                $result['message'] = 'Payment successfully from Cryptomus';
             } else {
-                $result['message'] = $param['status'];
+                $result['message'] = 'Payment error '.$param['status'].' from Cryptomus';
             }
         } else {
             $hacked = Session::get('cryptomus_hacked') ? Session::get('cryptomus_hacked') + 1 : 1;
