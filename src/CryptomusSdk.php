@@ -116,9 +116,7 @@ class CryptomusSdk
             'init_amount' => 0,
             'payment_amount' => 0,
             'currency' => '',
-            'invoice_number' => '',
-            'message' => 'Unknown error',
-            'description' => ''
+            'invoice_number' => ''
         ];
         if ($this->verify_result($param)) {
             if ($param['is_final'] && $param['order_id'] && in_array($param['status'], ['paid', 'paid_over'])) {
@@ -136,6 +134,30 @@ class CryptomusSdk
             $result['message'] = 'Trying to fake payment result';
             Session::put('cryptomus_hacked', $hacked);
         }
+        return $result;
+    }
+
+    public function check_payment(string $uuid, string $invoice_number): array
+    {
+        $result = [
+            'status' => false,
+            'init_amount' => 0,
+            'payment_amount' => 0,
+            'currency' => '',
+            'invoice_number' => ''
+        ];
+        $data = $this->client_payment->info(['uuid' => $uuid, 'order_id' => $invoice_number]);
+        if ($data['is_final'] && $data['order_id'] && in_array($data['status'], ['paid', 'paid_over'])) {
+            $result['status'] = true;
+            $result['init_amount'] = floatval($data['amount']);
+            $result['payment_amount'] = floatval($data['payment_amount']);
+            $result['currency'] = $data['payer_currency'];
+            $result['invoice_number'] = $data['order_id'];
+            $result['message'] = 'Payment successfully from Cryptomus';
+        } else {
+            $result['message'] = 'Payment error '.$data['status'].' from Cryptomus';
+        }
+
         return $result;
     }
 }
