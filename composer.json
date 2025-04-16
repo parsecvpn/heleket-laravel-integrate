@@ -21,11 +21,11 @@
             "Parsecvpn\\Heleket\\": "src/"
         }
     },
-    "homepage": "https://github.com/funnydevjsc/heleket-laravel-integrate",
+    "homepage": "https://github.com/parsecvpn/heleket-laravel-integrate",
     "keywords": ["Laravel", "package", "payment", "heleket", "9pay", "sepay", "crypto", "bitcoin", "btc", "litecoin", "ltc", "usdt", "bsc"],
     "require": {
         "php": "^8.1",
-        "heleket/api-php-sdk": "^1.0"
+        "parsecvpn/api-php-sdk": "^1.0"
     },
     "require-dev": {
         "illuminate/support": "^8.0",
