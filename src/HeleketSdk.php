@@ -1,16 +1,16 @@
 <?php
 
-namespace FunnyDev\Cryptomus;
+namespace Parsecvpn\Heleket;
 
-use Cryptomus\Api\Client;
-use Cryptomus\Api\Payment;
-use Cryptomus\Api\Payout;
-use Cryptomus\Api\RequestBuilderException;
+use Heleket\Api\Client;
+use Heleket\Api\Payment;
+use Heleket\Api\Payout;
+use Heleket\Api\RequestBuilderException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 
-class CryptomusSdk
+class HeleketSdk
 {
     public array $url;
     private string $merchant_uuid;
@@ -21,9 +21,9 @@ class CryptomusSdk
 
     public function __construct(string $merchant_uuid='', string $payment_key='', string $payout_key='')
     {
-        $this->merchant_uuid = empty($merchant_uuid) ? Config::get('cryptomus.merchant_uuid') : $merchant_uuid;
-        $this->payment_key = empty($payment_key) ? Config::get('cryptomus.payment_key') : $payment_key;
-        $this->payout_key = empty($payout_key) ? Config::get('cryptomus.payout_key') : $payout_key;
+        $this->merchant_uuid = empty($merchant_uuid) ? Config::get('heleket.merchant_uuid') : $merchant_uuid;
+        $this->payment_key = empty($payment_key) ? Config::get('heleket.payment_key') : $payment_key;
+        $this->payout_key = empty($payout_key) ? Config::get('heleket.payout_key') : $payout_key;
         $this->client_payment = Client::payment($this->payment_key, $this->merchant_uuid);
         $this->client_payout = Client::payout($this->payout_key, $this->merchant_uuid);
     }
@@ -34,7 +34,7 @@ class CryptomusSdk
             return $amount;
         }
 
-        $prices = Http::get('https://api.cryptomus.com/v1/exchange-rate/USD/list')->json();
+        $prices = Http::get('https://api.heleket.com/v1/exchange-rate/USD/list')->json();
 
         foreach ($prices['result'] as $price) {
             if ($price['to'] == $currency) {
@@ -125,14 +125,14 @@ class CryptomusSdk
                 $result['payment_amount'] = floatval($param['payment_amount']);
                 $result['currency'] = $param['payer_currency'];
                 $result['invoice_number'] = $param['order_id'];
-                $result['message'] = 'Payment successfully from Cryptomus';
+                $result['message'] = 'Payment successfully from Heleket';
             } else {
-                $result['message'] = 'Payment error '.$param['status'].' from Cryptomus';
+                $result['message'] = 'Payment error '.$param['status'].' from Heleket';
             }
         } else {
-            $hacked = Session::get('cryptomus_hacked') ? Session::get('cryptomus_hacked') + 1 : 1;
+            $hacked = Session::get('heleket_hacked') ? Session::get('heleket_hacked') + 1 : 1;
             $result['message'] = 'Trying to fake payment result';
-            Session::put('cryptomus_hacked', $hacked);
+            Session::put('heleket_hacked', $hacked);
         }
         return $result;
     }
@@ -153,9 +153,9 @@ class CryptomusSdk
             $result['payment_amount'] = floatval($data['payment_amount']);
             $result['currency'] = $data['payer_currency'];
             $result['invoice_number'] = $data['order_id'];
-            $result['message'] = 'Payment successfully from Cryptomus';
+            $result['message'] = 'Payment successfully from Heleket';
         } else {
-            $result['message'] = 'Payment error '.$data['status'].' from Cryptomus';
+            $result['message'] = 'Payment error '.$data['status'].' from Heleket';
         }
 
         return $result;

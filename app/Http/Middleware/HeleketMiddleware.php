@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class CryptomusMiddleware
+class HeleketMiddleware
 {
     const VALID_IPS = ['91.227.144.54'];
 

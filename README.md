@@ -1,16 +1,16 @@
-# cryptomus.com Laravel
+# heleket.com Laravel
 
-The free Laravel package to help you integrate payment with cryptomus.com
+The free Laravel package to help you integrate payment with heleket.com
 
 ## Use Cases
 
-- Create a payment link with cryptomus.com
-- Parse result from cryptomus.com
+- Create a payment link with heleket.com
+- Parse result from heleket.com
 - Example webhook
 
 ## Features
 
-- Dynamic cryptomus.com credentials from config/cryptomus.php
+- Dynamic heleket.com credentials from config/heleket.php
 - Easy to create payment link with a simple line code
 
 ## Requirements
@@ -31,20 +31,20 @@ https://laravel.com/docs/installation
 #### Step 2. Require the current package using composer:
 
 ```bash
-composer require funnydevjsc/cryptomus-laravel-integrate
+composer require parsecvpn/heleket-laravel-integrate
 ```
 
 #### Step 3. Publish the controller file and config file
 
 ```bash
-php artisan vendor:publish --provider="FunnyDev\Cryptomus\CryptomusServiceProvider" --tag="cryptomus"
+php artisan vendor:publish --provider="Parsecvpn\Heleket\HeleketServiceProvider" --tag="heleket"
 ```
 
-If publishing files fails, please create corresponding files at the path `config/cryptomus.php` and `app\Http\Controllers\CryptomusControllers.php` from this package. And you can also further customize the CryptomusControllers.php file to suit your project.
+If publishing files fails, please create corresponding files at the path `config/heleket.php` and `app\Http\Controllers\HeleketControllers.php` from this package. And you can also further customize the HeleketControllers.php file to suit your project.
 
 #### Step 4. Update the various config settings in the published config file:
 
-After publishing the package assets a configuration file will be located at <code>config/cryptomus.php</code>. Please contact cryptomus.com to get those values to fill into the config file.
+After publishing the package assets a configuration file will be located at <code>config/heleket.php</code>. Please contact heleket.com to get those values to fill into the config file.
 
 #### Step 5. Add middleware protection:
 
@@ -68,7 +68,7 @@ class Kernel extends HttpKernel
      */
     protected $routeMiddleware = [
         // Other middlewares...
-         'cryptomus' => 'App\Http\Middleware\CryptomusMiddleware',
+         'heleket' => 'App\Http\Middleware\HeleketMiddleware',
     ];
 }
 ```
@@ -81,18 +81,18 @@ class Kernel extends HttpKernel
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CryptomusController;
+use App\Http\Controllers\HeleketController;
 
 // Other routes properties...
 
-Route::group(['middleware' => ['cryptomus']], function () {
-    Route::post('/cryptomus/webhook', [CryptomusController::class, 'webhook']);
+Route::group(['middleware' => ['heleket']], function () {
+    Route::post('/heleket/webhook', [HeleketController::class, 'webhook']);
 });
 
 }
 ```
 
-Then your IPN (Webhook) URL will be something like https://yourdomain.ltd/api/cryptomus/webhook, and you should provide it to Cryptomus's account setting. You could provide it to `routes/web.php` if you want but remember that Cryptomus will check for referer matched with the pre-registration URL. So make sure that you provide them the right URL of website.
+Then your IPN (Webhook) URL will be something like https://yourdomain.ltd/api/heleket/webhook, and you should provide it to Heleket's account setting. You could provide it to `routes/web.php` if you want but remember that Heleket will check for referer matched with the pre-registration URL. So make sure that you provide them the right URL of website.
 
 <!--- ## Usage --->
 
@@ -103,14 +103,14 @@ Then your IPN (Webhook) URL will be something like https://yourdomain.ltd/api/cr
 
 namespace App\Console\Commands;
 
-use FunnyDev\Cryptomus\CryptomusSdk;
+use Parsecvpn\Heleket\HeleketSdk;
 use Illuminate\Console\Command;
 
-class CryptomusTestCommand extends Command
+class HeleketTestCommand extends Command
 {
-    protected $signature = 'cryptomus:test';
+    protected $signature = 'heleket:test';
 
-    protected $description = 'Test Cryptomus SDK';
+    protected $description = 'Test Heleket SDK';
 
     public function __construct()
     {
@@ -119,7 +119,7 @@ class CryptomusTestCommand extends Command
 
     public function handle()
     {
-        $instance = new CryptomusSdk();
+        $instance = new HeleketSdk();
         echo $instance->create_payment(
             'INV-test-01',
             100,
